@@ -1,0 +1,11 @@
+{
+  "revision": "dfa4a7b14b12",
+  "stage": "process",
+  "substage": "default",
+  "engine": "here",
+  "status": "failed",
+  "startedAt": "2026-08-21T17:41:31.107552045Z",
+  "duration": 1.067940345,
+  "message": "target \"process\" exited 1 in ../golden-register",
+  "output": "$ forge test run process (in ../golden-register)\nRunning tests: stage=process, name=process-20260821-174131\nSourced 0 environment variables from .envrc\ngo: github.com/alexandremahdhaoui/forge@v0.0.0-20260819181324-4be4ce43ed6f requires go \u003e= 1.25.0; switching to go1.26.7\n2026/08/21 17:41:31 Running tests for stage process using generic-test-runner\n2026/08/21 17:41:31 Running tests: stage=process name=process-20260821-174131 command=forge-register\n2026/08/21 17:41:32 Stderr: processing python/httpx/1787334090-admission: discovering python:httpx: querying vulnerabilities for httpx: posting https://api.osv.dev/v1/querybatch: Post \"https://api.osv.dev/v1/querybatch\": Forbidden\nError: test run failed: build failed: Tests failed for stage process: Command exited with code 1\n"
+}
