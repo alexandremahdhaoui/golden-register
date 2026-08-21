@@ -13,6 +13,8 @@ set -eu
 ROOT="${1:-..}"
 
 cd "$ROOT"
-forge-factory sync --config forge-factory.yaml
+# --register-head: the workspace pins a published register tag, and the
+# canary exists to test what that pin would hide - the candidate checkout.
+forge-factory sync --config forge-factory.yaml --register-head
 cd golden-go
 forge test run unit

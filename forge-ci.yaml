@@ -41,6 +41,18 @@ engines:
     engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
     manager: local
 
+  # Tag-on-green. Uncomment this engine, the `release: publish` line on the
+  # canary stage and the top-level `version:` to make a green run tag and
+  # publish on its own. It shells out to gh, which this environment lacks -
+  # activate it on a machine that has gh authenticated, and bump version:
+  # past the last published tag first (a tag is never moved).
+  # - alias: publish
+  #   type: artifact
+  #   engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
+  #   manager: local
+  #   spec:
+  #     releaseIn: golden-register
+
 state: pipeline-state
 triggers: [on-change]
 
@@ -78,9 +90,10 @@ stages:
 
   - name: canary
     # The revision is minted here: only a canary-green index state is a
-    # claim consumers may rely on. Tagging on green is the release engine's
-    # job once it can run (it needs gh, deferred in this environment).
+    # claim consumers may rely on. Tagging on green is the publish engine's
+    # job - see the commented engine above for how to activate it.
     mint: true
+    # release: publish     # with `version: vX.Y.Z` at the top level
     promotion: all-pass
     substages:
       - name: default
