@@ -19,14 +19,15 @@ engines:
     engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-local"
     manager: local
 
-  # The pipeline's own run records, kept apart from the index this pipeline
-  # writes: a run is not a register record.
+  # The pipeline's own run records live in golden-state like every other
+  # pipeline's, kept apart from the index this pipeline writes: a run is not
+  # a register record.
   - alias: pipeline-state
     type: state
     engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git"
     manager: local
     spec:
-      path: golden-register/.forge-ci/pipeline-state
+      path: golden-state
 
   - alias: on-change
     type: trigger
