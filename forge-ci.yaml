@@ -54,9 +54,9 @@ targets:
     in: [golden-register]
 
   # The canary syncs the playground workspace against the candidate index
-  # and runs its gates. Stubbed green until phase 4 wires the real thing.
+  # and runs a consumer gate. Red means nothing mints and nothing publishes.
   - alias: canary
-    forge: test run status
+    forge: test run canary
     in: [golden-register]
 
 stages:

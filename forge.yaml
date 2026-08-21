@@ -24,3 +24,9 @@ test:
     spec:
       command: forge-register
       args: [status]
+
+  - name: canary
+    runner: go://generic-test-runner
+    spec:
+      command: sh
+      args: ["hack/canary.sh"]
