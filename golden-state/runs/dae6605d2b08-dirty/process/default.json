@@ -1,0 +1,33 @@
+{
+  "revision": "dae6605d2b08-dirty",
+  "stage": "process",
+  "substage": "default",
+  "engine": "here",
+  "status": "passed",
+  "startedAt": "2026-08-21T17:31:31.081021778Z",
+  "duration": 1.3995685629999999,
+  "output": "$ forge test run process (in ../golden-register)\nRunning tests: stage=process, name=process-20260821-173131\n\nTest Results:\nStatus: passed\nTotal: 1\nPassed: 1\nFailed: 0\nCoverage: 0.0%\nSourced 0 environment variables from .envrc\ngo: github.com/alexandremahdhaoui/forge@v0.0.0-20260819181324-4be4ce43ed6f requires go \u003e= 1.25.0; switching to go1.26.7\n2026/08/21 17:31:31 Running tests for stage process using generic-test-runner\n2026/08/21 17:31:31 Running tests: stage=process name=process-20260821-173131 command=forge-register\n2026/08/21 17:31:32 Stdout: process: 0 verdicts, 0 adopted, 0 feed failures\n",
+  "forge": {
+    "testReports": [
+      {
+        "id": "53474f6c-6767-4268-bb56-bf5a436a8522",
+        "stage": "process",
+        "status": "passed",
+        "startTime": "2026-08-21T17:31:32.4707188Z",
+        "duration": 0,
+        "testStats": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "coverage": {
+          "enabled": false,
+          "percentage": 0
+        },
+        "createdAt": "2026-08-21T17:31:32.475418509Z",
+        "updatedAt": "2026-08-21T17:31:32.475418509Z"
+      }
+    ]
+  }
+}
