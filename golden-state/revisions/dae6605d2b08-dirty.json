@@ -1,0 +1,10 @@
+{
+  "createdAt": "2026-08-21T17:31:31.064322861Z",
+  "dirty": [
+    "golden-register"
+  ],
+  "id": "dae6605d2b08-dirty",
+  "repos": {
+    "golden-register": "afbb936f3c124f881a26b3e20d08f7ea7ea896eb"
+  }
+}
