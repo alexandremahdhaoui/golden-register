@@ -1,0 +1,1 @@
+{"current":"0.141.1","ecosystem":"python","history":[{"adoptedAt":"2026-08-21T14:01:12.910901704Z","osvSnapshot":"sha256:e3b0c44298fc1c14","releasedAt":"2026-07-29T17:18:04.364385Z","version":"0.141.1","vulns":{"critical":0,"high":0,"low":0,"medium":0}}],"package":"fastapi","prefix":"0","updatedAt":"2026-08-21T14:01:12.910901704Z"}
