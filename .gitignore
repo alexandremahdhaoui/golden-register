@@ -3,3 +3,8 @@
 /build/
 /tmp/
 .envrc
+# Run records live in the sibling golden-state repo. A pipeline run started
+# from inside this repo (instead of the workspace root) would nest a copy
+# here; ignoring it makes such a run fail loud instead of committing state
+# records into the register.
+/golden-state/
