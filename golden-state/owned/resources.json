@@ -1,0 +1,18 @@
+[
+  {
+    "resource": "directory/golden-state",
+    "manager": "local"
+  },
+  {
+    "resource": "directory/golden-state/owned",
+    "manager": "local"
+  },
+  {
+    "resource": "directory/golden-state/revisions",
+    "manager": "local"
+  },
+  {
+    "resource": "directory/golden-state/runs",
+    "manager": "local"
+  }
+]
