@@ -1,0 +1,88 @@
+name: golden-register
+
+artifactStorePath: .forge-ci/artifact-store.yaml
+
+repos:
+  - name: golden-register
+    url: git@github.com:alexandremahdhaoui/golden-register.git
+    ref: main
+
+managers:
+  - alias: local
+    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-local"
+    spec:
+      statePath: .forge-ci/manager-local.json
+
+engines:
+  - alias: here
+    type: compute
+    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-local"
+    manager: local
+
+  # The pipeline's own run records, kept apart from the index this pipeline
+  # writes: a run is not a register record.
+  - alias: pipeline-state
+    type: state
+    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git"
+    manager: local
+    spec:
+      path: golden-register/.forge-ci/pipeline-state
+
+  - alias: on-change
+    type: trigger
+    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-trigger-watch"
+    manager: local
+    spec:
+      watch: ["golden-register"]
+
+  - alias: all-pass
+    type: promotion
+    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
+    manager: local
+
+state: pipeline-state
+triggers: [on-change]
+
+targets:
+  - alias: process
+    forge: test run process
+    in: [golden-register]
+
+  - alias: evaluate
+    forge: test run evaluate
+    in: [golden-register]
+
+  # The canary syncs the playground workspace against the candidate index
+  # and runs its gates. Stubbed green until phase 4 wires the real thing.
+  - alias: canary
+    forge: test run status
+    in: [golden-register]
+
+stages:
+  - name: process
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [process]
+
+  - name: evaluate
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [evaluate]
+
+  - name: canary
+    # The revision is minted here: only a canary-green index state is a
+    # claim consumers may rely on. Tagging on green is the release engine's
+    # job once it can run (it needs gh, deferred in this environment).
+    mint: true
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [canary]

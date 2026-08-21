@@ -1,0 +1,20 @@
+# The golden register: the catalog of adoptable package versions for the
+# playground workspaces. The pipeline is the only writer; consumers only
+# consume tags published on green runs.
+#
+# Every policy knob is register-level. A consumer can read them and can never
+# set them. POC values: quarantine 0 so runs are watchable, floor no-critical.
+name: golden-register
+
+state:
+  engine: go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git
+  spec:
+    path: .
+
+params:
+  quarantineDays: 0
+  admissionMaxSeverity: critical
+  deprecateAfterDays: 30
+  staleAfterDays: 180
+  deprecatedGraceDays: 30
+  maxTracksPerPackage: 2
