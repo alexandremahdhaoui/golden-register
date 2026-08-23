@@ -30,3 +30,9 @@ test:
     spec:
       command: sh
       args: ["hack/canary.sh"]
+
+  - name: publish-members
+    runner: forge://generic-test-runner
+    spec:
+      command: sh
+      args: ["hack/publish-members.sh"]
