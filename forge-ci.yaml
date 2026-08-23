@@ -9,14 +9,14 @@ repos:
 
 managers:
   - alias: local
-    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-local"
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-local"
     spec:
       statePath: .forge-ci/manager-local.json
 
 engines:
   - alias: here
     type: compute
-    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-local"
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-local"
     manager: local
 
   # The pipeline's own run records live in golden-state like every other
@@ -24,21 +24,21 @@ engines:
   # a register record.
   - alias: pipeline-state
     type: state
-    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git"
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git"
     manager: local
     spec:
       path: golden-state
 
   - alias: on-change
     type: trigger
-    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-trigger-watch"
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-trigger-watch"
     manager: local
     spec:
       watch: ["golden-register"]
 
   - alias: all-pass
     type: promotion
-    engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
     manager: local
 
   # Tag-on-green. Uncomment this engine, the `release: publish` line on the
@@ -48,7 +48,7 @@ engines:
   # past the last published tag first (a tag is never moved).
   # - alias: publish
   #   type: artifact
-  #   engine: "go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
+  #   engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
   #   manager: local
   #   spec:
   #     releaseIn: golden-register

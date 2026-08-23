@@ -13,7 +13,7 @@
 name: golden-register
 
 state:
-  engine: go://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git
+  engine: forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git
   spec:
     path: .
 

@@ -8,25 +8,25 @@ build: []
 # is how the pipeline stays the index's only writer.
 test:
   - name: process
-    runner: go://generic-test-runner
+    runner: forge://generic-test-runner
     spec:
       command: forge-register
       args: [process]
 
   - name: evaluate
-    runner: go://generic-test-runner
+    runner: forge://generic-test-runner
     spec:
       command: forge-register
       args: [evaluate]
 
   - name: status
-    runner: go://generic-test-runner
+    runner: forge://generic-test-runner
     spec:
       command: forge-register
       args: [status]
 
   - name: canary
-    runner: go://generic-test-runner
+    runner: forge://generic-test-runner
     spec:
       command: sh
       args: ["hack/canary.sh"]
