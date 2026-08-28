@@ -1,0 +1,225 @@
+name: golden-register
+
+artifactStorePath: .forge-ci/artifact-store.yaml
+
+repos:
+  - name: golden-register
+    url: git@github.com:alexandremahdhaoui/golden-register.git
+    ref: main
+
+managers:
+  - alias: local
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-local"
+    spec:
+      statePath: .forge-ci/manager-local.json
+
+  # Realizes the GitHub surface the actions engine declares: converged
+  # workflow files on this checkout, sealed Actions secrets, workflow
+  # enablement. It reads GITHUB_TOKEN from the environment (.envrc).
+  - alias: github
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-github"
+    spec:
+      statePath: .forge-ci/manager-github.json
+
+engines:
+  - alias: here
+    type: compute
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-local"
+    manager: local
+
+  # The GitHub surface, owned by the engine that uses it: every workflow
+  # file under .github/workflows is declared from this spec (templated;
+  # `content:` on an entry overrides verbatim), beside the Actions
+  # secrets and enablement. Bootstrap provisions the lot, every apply
+  # re-converges it - a hand-edited workflow drifts back to this spec.
+  # No substage routes here yet; the stages below stay on local compute.
+  - alias: actions
+    type: compute
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-compute-github"
+    manager: github
+    spec:
+      repo: alexandremahdhaoui/golden-register
+      dir: golden-register
+      setup:
+        - uses: actions/setup-go@v5
+          with:
+            go-version: "1.26"
+        # With the distribution consumption active (below), cache the store
+        # as a unit so a warm runner downloads nothing:
+        # - uses: actions/cache@v4
+        #   with:
+        #     path: ~/.cache/forge/store
+        #     key: forge-store-${{ runner.os }}
+      workspace:
+        factoryRepo: golden-factory
+        placeScript: hack/place.sh
+        # The seed is exactly one pinned binary; latest is never a fallback.
+        # The sha is the forge-factory the toolchain last proved - bump it
+        # when the workspace pipeline republishes.
+        bootstrapCommand: go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@d37002e4281fa6b29203c830da9d52dd5cd14edf clone --config ../forge-factory.yaml --root ..
+        toolchainScript: |
+          (cd forge && go install ./cmd/forge)
+          (cd forge-factory && go install ./cmd/...)
+          (cd forge-ci && go install ./cmd/...)
+          (cd forge-register && go install ./cmd/...)
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+          # Once the toolchain's aggregated dist release exists (activate
+          # dist-release in forge-self-factory's pipeline), the install
+          # block above collapses to consuming prebuilt, digest-verified
+          # binaries - and works identically against an airgapped mirror:
+          #   export FORGE_DIST_MIRROR=https://github.com/alexandremahdhaoui/forge-self-factory/releases/latest/download
+          #   forge-factory sync --config ../forge-factory.yaml --root ..
+          #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
+      secrets:
+        - name: WORKSPACE_TOKEN
+          fromEnv: WORKSPACE_TOKEN
+        - name: DISPATCH_TOKEN
+          fromEnv: DISPATCH_TOKEN
+      workflows:
+        - name: intake
+          kind: command
+          header: |
+            # Scheduled security intake: run the register pipeline so a fresh OSV
+            # snapshot re-evaluates every track and raises any advisory that is due.
+            #
+            # UNEXERCISED: written where Actions cannot run. It needs one secret,
+            # WORKSPACE_TOKEN - a token that can read every workspace member and push
+            # to this repo - because the pipeline builds the whole playground
+            # workspace around this checkout.
+          cron: "17 5 * * *"
+          job: apply
+          stepName: Run the register pipeline
+          secret: WORKSPACE_TOKEN
+          push: true
+          command: |
+            cd golden-register
+            touch .envrc
+            forge-ci apply --config forge-ci.yaml --root ..
+        - name: request
+          kind: command
+          header: |
+            # The remote consumer's request door: a repository_dispatch of type
+            # admission-request files the request into the register's store, where the
+            # next pipeline run answers it under the same policy as everything else.
+            # A request is untrusted input whoever files it and however it arrives.
+            #
+            # UNEXERCISED: written where Actions cannot run. It needs the same
+            # WORKSPACE_TOKEN as intake. A consumer fires it with:
+            #
+            #   forge-register add go:github.com/x/pkg --reason "..." \
+            #     --dispatch <owner>/golden-register
+          events: [admission-request]
+          job: file
+          stepName: File the request
+          secret: WORKSPACE_TOKEN
+          payloadEnv: [ecosystem, package, track, version, requester, reason]
+          command: |
+            cd golden-register
+            forge-register add \
+              ${TRACK:+--track "$TRACK"} \
+              ${VERSION:+--version "$VERSION"} \
+              ${REQUESTER:+--requester "$REQUESTER"} \
+              --reason "$REASON" \
+              "$ECOSYSTEM:$PACKAGE"
+        - name: propagate
+          kind: fan-out
+          header: |
+            # A new register tag is news every consumer wants: tell them, so their
+            # pipelines re-sync against it instead of waiting for a human.
+            #
+            # UNEXERCISED: written where Actions cannot run. It needs one secret,
+            # DISPATCH_TOKEN - a token that can send repository_dispatch to the
+            # consumer repos named below.
+          tagPattern: "v*"
+          secret: DISPATCH_TOKEN
+          eventType: register-tag
+          consumers: [golden-factory, golden-register-consumer]
+        - name: release
+          kind: release
+      runner:
+        name: ci-runner
+        secret: WORKSPACE_TOKEN
+        setupScript: |
+          for d in */; do [ -f "$d.envrc" ] || touch "$d.envrc"; done
+
+  # The pipeline's own run records live in golden-state like every other
+  # pipeline's, kept apart from the index this pipeline writes: a run is not
+  # a register record.
+  - alias: pipeline-state
+    type: state
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git"
+    manager: local
+    spec:
+      path: golden-state
+
+  - alias: on-change
+    type: trigger
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-trigger-watch"
+    manager: local
+    spec:
+      watch: ["golden-register"]
+
+  - alias: all-pass
+    type: promotion
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
+    manager: local
+
+  # Tag-on-green. Uncomment this engine, the `release: publish` line on the
+  # canary stage and the top-level `version:` to make a green run tag and
+  # publish on its own. It shells out to gh, which this environment lacks -
+  # activate it on a machine that has gh authenticated, and bump version:
+  # past the last published tag first (a tag is never moved).
+  # - alias: publish
+  #   type: artifact
+  #   engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
+  #   manager: local
+  #   spec:
+  #     releaseIn: golden-register
+
+state: pipeline-state
+triggers: [on-change]
+
+targets:
+  - alias: process
+    forge: test run process
+    in: [golden-register]
+
+  - alias: evaluate
+    forge: test run evaluate
+    in: [golden-register]
+
+  # The canary syncs the playground workspace against the candidate index
+  # and runs a consumer gate. Red means nothing mints and nothing publishes.
+  - alias: canary
+    forge: test run canary
+    in: [golden-register]
+
+stages:
+  - name: process
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [process]
+
+  - name: evaluate
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [evaluate]
+
+  - name: canary
+    # The revision is minted here: only a canary-green index state is a
+    # claim consumers may rely on. Tagging on green is the publish engine's
+    # job - see the commented engine above for how to activate it.
+    mint: true
+    # release: publish     # with `version: vX.Y.Z` at the top level
+    promotion: all-pass
+    substages:
+      - name: default
+        engine: here
+        manager: local
+        targets: [canary]

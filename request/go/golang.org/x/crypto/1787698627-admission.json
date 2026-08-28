@@ -1,0 +1,1 @@
+{"createdAt":"2026-08-25T22:57:07.473339859Z","ecosystem":"go","package":"golang.org/x/crypto","reason":"nacl sealed-box encryption for Actions secrets in forge-ci's github manager","type":"admission"}

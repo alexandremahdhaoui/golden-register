@@ -1,0 +1,18 @@
+{
+ "package": "clap",
+ "ecosystem": "rust",
+ "prefix": "4",
+ "current": "4.6.6",
+ "updatedAt": "2026-08-24T20:28:36.281804496Z",
+ "releasedAt": "0001-01-01T00:00:00Z",
+ "adoptedAt": "2026-08-24T20:28:36.281804496Z",
+ "vulns": {
+  "critical": 0,
+  "high": 0,
+  "medium": 0,
+  "low": 0
+ },
+ "outcome": "unreachable",
+ "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
+ "osvSnapshot": "sha256:e3b0c44298fc1c14"
+}

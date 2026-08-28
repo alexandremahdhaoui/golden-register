@@ -1,0 +1,26 @@
+# The golden register: the catalog of adoptable package versions for the
+# playground workspaces. The pipeline is the only writer; consumers only
+# consume tags published on green runs.
+#
+# Every policy knob is register-level. A consumer can read them and can never
+# set them.
+#
+# quarantine 7: a release must sit a week before adoption, unless it is
+# strictly safer than the current - a security upgrade waives quarantine.
+# The floor stays no-critical (admissionMaxSeverity: critical). Note the
+# rust entries carry no release dates yet (crates.io API unreachable at
+# seed time), so quarantine cannot bite for them until a re-discover.
+name: golden-register
+
+state:
+  engine: forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-state-git
+  spec:
+    path: .
+
+params:
+  quarantineDays: 7
+  admissionMaxSeverity: critical
+  deprecateAfterDays: 30
+  staleAfterDays: 180
+  deprecatedGraceDays: 30
+  maxTracksPerPackage: 2

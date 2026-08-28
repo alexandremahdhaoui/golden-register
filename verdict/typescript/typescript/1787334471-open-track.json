@@ -1,0 +1,1 @@
+{"code":"denied-not-a-maintained-line","decidedAt":"2026-08-21T17:59:41.26200459Z","ecosystem":"typescript","message":"5 is not a maintained line: upstream has released nothing into it since a successor exists; this is a pin, use a pin","osvSnapshot":"sha256:e3b0c44298fc1c14","package":"typescript","track":"5"}

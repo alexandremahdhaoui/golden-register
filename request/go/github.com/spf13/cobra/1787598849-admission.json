@@ -1,0 +1,1 @@
+{"createdAt":"2026-08-24T19:14:09.655277597Z","ecosystem":"go","package":"github.com/spf13/cobra","reason":"cli-cobra generator engine in forge-dev-codegen emits cobra dispatchers","type":"admission"}

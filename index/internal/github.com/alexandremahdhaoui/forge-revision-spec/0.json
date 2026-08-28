@@ -1,0 +1,20 @@
+{
+ "package": "github.com/alexandremahdhaoui/forge-revision-spec",
+ "ecosystem": "internal",
+ "prefix": "0",
+ "current": "v0.3.0",
+ "updatedAt": "2026-08-21T14:01:11.600620629Z",
+ "releasedAt": "2026-08-21T14:01:11.600620629Z",
+ "adoptedAt": "2026-08-21T14:01:11.600620629Z",
+ "vulns": {
+  "critical": 0,
+  "high": 0,
+  "medium": 0,
+  "low": 0
+ },
+ "outcome": "unreachable",
+ "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
+ "source": "git@github.com:alexandremahdhaoui/forge-revision-spec.git",
+ "provenance": "16e5703cc0f9",
+ "osvSnapshot": "sha256:e3b0c44298fc1c14"
+}

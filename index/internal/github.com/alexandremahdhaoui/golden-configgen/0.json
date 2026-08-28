@@ -1,0 +1,20 @@
+{
+ "package": "github.com/alexandremahdhaoui/golden-configgen",
+ "ecosystem": "internal",
+ "prefix": "0",
+ "current": "v0.1.0",
+ "updatedAt": "2026-08-26T09:08:04.90568917Z",
+ "releasedAt": "2026-08-26T09:08:04.90568917Z",
+ "adoptedAt": "2026-08-26T09:08:04.90568917Z",
+ "vulns": {
+  "critical": 0,
+  "high": 0,
+  "medium": 0,
+  "low": 0
+ },
+ "outcome": "unreachable",
+ "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
+ "source": "git@github.com:alexandremahdhaoui/golden-configgen.git",
+ "provenance": "cabcb7a92936",
+ "osvSnapshot": "sha256:e3b0c44298fc1c14"
+}

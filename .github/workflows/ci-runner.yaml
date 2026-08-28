@@ -1,0 +1,54 @@
+# The remote compute runner: the github compute engine dispatches this
+# workflow with a unique marker and the target script, then correlates
+# the run by the marker in its name and polls it to conclusion.
+name: ci-runner
+run-name: run ${{ inputs.marker }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      marker:
+        description: correlation marker echoed in the run name
+        required: true
+      script:
+        description: target commands executed at the workspace root
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Check out the workspace around this repo
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.WORKSPACE_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git clone "git@github.com:${{ github.repository_owner }}/golden-factory.git"
+          sh golden-factory/hack/place.sh
+          git clone "git@github.com:${{ github.repository }}.git" golden-register
+          (cd golden-register && go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@d37002e4281fa6b29203c830da9d52dd5cd14edf clone --config ../forge-factory.yaml --root ..)
+
+      - name: Install the toolchain from the workspace
+        run: |
+          (cd forge && go install ./cmd/forge)
+          (cd forge-factory && go install ./cmd/...)
+          (cd forge-ci && go install ./cmd/...)
+          (cd forge-register && go install ./cmd/...)
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+          # Once the toolchain's aggregated dist release exists (activate
+          # dist-release in forge-self-factory's pipeline), the install
+          # block above collapses to consuming prebuilt, digest-verified
+          # binaries - and works identically against an airgapped mirror:
+          #   export FORGE_DIST_MIRROR=https://github.com/alexandremahdhaoui/forge-self-factory/releases/latest/download
+          #   forge-factory sync --config ../forge-factory.yaml --root ..
+          #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
+
+      - name: Run the targets
+        run: |
+          for d in */; do [ -f "$d.envrc" ] || touch "$d.envrc"; done
+          ${{ inputs.script }}

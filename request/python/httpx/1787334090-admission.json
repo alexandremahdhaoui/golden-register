@@ -1,0 +1,1 @@
+{"createdAt":"2026-08-21T17:41:30.901283902Z","ecosystem":"python","package":"httpx","reason":"re-admission after the pre-release parsing fix: 1.0.dev5 had entered as a release","type":"admission"}
