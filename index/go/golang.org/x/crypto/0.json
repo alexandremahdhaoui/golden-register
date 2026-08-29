@@ -1,18 +1,1 @@
-{
- "package": "golang.org/x/crypto",
- "ecosystem": "go",
- "prefix": "0",
- "current": "v0.55.0",
- "updatedAt": "2026-08-25T22:58:52.694875107Z",
- "releasedAt": "2026-08-11T17:56:31Z",
- "adoptedAt": "2026-08-25T22:58:52.694875107Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-25T22:58:52.694875107Z","advisory":{"affectedImports":["golang.org/x/crypto/openpgp","golang.org/x/crypto/openpgp/armor","golang.org/x/crypto/openpgp/clearsign","golang.org/x/crypto/openpgp/elgamal","golang.org/x/crypto/openpgp/errors","golang.org/x/crypto/openpgp/packet","golang.org/x/crypto/openpgp/s2k"],"severity":"unknown","since":"2026-07-07T22:15:29Z","vulnIds":["GO-2026-5932"]},"current":"v0.55.0","deprecated":{"reason":"no-fix","since":"2026-08-29T14:27:40.37305214+02:00"},"ecosystem":"go","osvSnapshot":"sha256:e3b0c44298fc1c14","outcome":"findings","package":"golang.org/x/crypto","prefix":"0","reason":"1 published range(s) cover v0.55.0","releasedAt":"2026-08-11T17:56:31Z","updatedAt":"2026-08-25T22:58:52.694875107Z","vulns":{"critical":0,"high":1,"low":0,"medium":0}}
