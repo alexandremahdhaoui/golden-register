@@ -51,12 +51,16 @@ engines:
         #     path: ~/.cache/forge/store
         #     key: forge-store-${{ runner.os }}
       workspace:
-        factoryRepo: golden-factory
-        placeScript: hack/place.sh
-        # The seed is exactly one pinned binary; latest is never a fallback.
-        # The sha is the forge-factory the toolchain last proved - bump it
-        # when the workspace pipeline republishes.
-        bootstrapCommand: go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@d37002e4281fa6b29203c830da9d52dd5cd14edf clone --config ../forge-factory.yaml --root ..
+        # The seed is exactly one pinned binary standing the whole workspace
+        # up in one call; latest is never a fallback. The sha is the
+        # forge-factory the toolchain last proved - bump it when the
+        # workspace pipeline republishes.
+        #
+        # This was five lines of shell that cloned the factory, ran its place
+        # script from the wrong directory, cloned this repo again and passed
+        # relative paths across two levels. Every scheduled run failed for a
+        # week inside those five lines.
+        bootstrapCommand: go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@6aaa84a27c00f9be226998b2014d62d9129a8a96 bootstrap git@github.com:alexandremahdhaoui/golden-factory.git .
         toolchainScript: |
           (cd forge && go install ./cmd/forge)
           (cd forge-factory && go install ./cmd/...)
