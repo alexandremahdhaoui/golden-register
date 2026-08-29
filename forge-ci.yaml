@@ -20,7 +20,7 @@ managers:
     engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-manager-github"
     spec:
       statePath: .forge-ci/manager-github.json
-      tokenEnv: FACTORY_TOKEN
+      tokenEnv: FORGE_CI_GITHUB_TOKEN
 
 engines:
   - alias: here
@@ -76,10 +76,10 @@ engines:
           #   forge-factory sync --config ../forge-factory.yaml --root ..
           #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
       secrets:
-        - name: FACTORY_TOKEN
-          fromEnv: FACTORY_TOKEN
-        - name: FACTORY_TOKEN
-          fromEnv: FACTORY_TOKEN
+        - name: FORGE_CI_GITHUB_TOKEN
+          fromEnv: FORGE_CI_GITHUB_TOKEN
+        - name: FORGE_CI_DISPATCH_TOKEN
+          fromEnv: FORGE_CI_DISPATCH_TOKEN
       workflows:
         - name: intake
           kind: command
@@ -88,13 +88,13 @@ engines:
             # snapshot re-evaluates every track and raises any advisory that is due.
             #
             # UNEXERCISED: written where Actions cannot run. It needs one secret,
-            # FACTORY_TOKEN - a token that can read every workspace member and push
+            # FORGE_CI_GITHUB_TOKEN - a token that can read every workspace member and push
             # to this repo - because the pipeline builds the whole playground
             # workspace around this checkout.
           cron: "17 5 * * *"
           job: apply
           stepName: Run the register pipeline
-          secret: FACTORY_TOKEN
+          secret: FORGE_CI_GITHUB_TOKEN
           push: true
           command: |
             cd golden-register
@@ -109,14 +109,14 @@ engines:
             # A request is untrusted input whoever files it and however it arrives.
             #
             # UNEXERCISED: written where Actions cannot run. It needs the same
-            # FACTORY_TOKEN as intake. A consumer fires it with:
+            # FORGE_CI_GITHUB_TOKEN as intake. A consumer fires it with:
             #
             #   forge-register add go:github.com/x/pkg --reason "..." \
             #     --dispatch <owner>/golden-register
           events: [admission-request]
           job: file
           stepName: File the request
-          secret: FACTORY_TOKEN
+          secret: FORGE_CI_GITHUB_TOKEN
           payloadEnv: [ecosystem, package, track, version, requester, reason]
           command: |
             cd golden-register
@@ -133,17 +133,17 @@ engines:
             # pipelines re-sync against it instead of waiting for a human.
             #
             # UNEXERCISED: written where Actions cannot run. It needs one secret,
-            # FACTORY_TOKEN - a token that can send repository_dispatch to the
-            # consumer repos named below.
+            # FORGE_CI_DISPATCH_TOKEN - a token that can send repository_dispatch to the
+            # consumer repos named below and nothing else.
           tagPattern: "v*"
-          secret: FACTORY_TOKEN
+          secret: FORGE_CI_DISPATCH_TOKEN
           eventType: register-tag
           consumers: [golden-factory, golden-register-consumer]
         - name: release
           kind: release
       runner:
         name: ci-runner
-        secret: FACTORY_TOKEN
+        secret: FORGE_CI_GITHUB_TOKEN
         setupScript: |
           for d in */; do [ -f "$d.envrc" ] || touch "$d.envrc"; done
 

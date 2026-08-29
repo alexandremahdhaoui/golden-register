@@ -27,7 +27,7 @@ jobs:
 
       - name: Check out the workspace around this repo
         run: |
-          git config --global url."https://x-access-token:${{ secrets.FACTORY_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git config --global url."https://x-access-token:${{ secrets.FORGE_CI_GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
           go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@6aaa84a27c00f9be226998b2014d62d9129a8a96 bootstrap git@github.com:alexandremahdhaoui/golden-factory.git .
 
       - name: Install the toolchain from the workspace
