@@ -1,18 +1,1 @@
-{
- "package": "@hey-api/openapi-ts",
- "ecosystem": "typescript",
- "prefix": "0",
- "current": "0.99.0",
- "updatedAt": "2026-08-21T14:01:12.910901704Z",
- "releasedAt": "2026-06-22T06:38:34.73Z",
- "adoptedAt": "2026-08-21T14:01:12.910901704Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-21T14:01:12.910901704Z","current":"0.99.0","ecosystem":"typescript","osvSnapshot":"sha256:e3b0c44298fc1c14","outcome":"clean","package":"@hey-api/openapi-ts","prefix":"0","reason":"the feed carries 1 record(s) for @hey-api/openapi-ts and none of their ranges cover 0.99.0","releasedAt":"2026-06-22T06:38:34.73Z","updatedAt":"2026-08-21T14:01:12.910901704Z","vulns":{"critical":0,"high":0,"low":0,"medium":0}}
