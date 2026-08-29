@@ -1,18 +1,1 @@
-{
- "package": "github.com/golangci/golangci-lint/v2",
- "ecosystem": "go",
- "prefix": "2",
- "current": "v2.12.2",
- "updatedAt": "2026-08-26T14:55:03.040556635Z",
- "releasedAt": "2026-05-06T11:01:25Z",
- "adoptedAt": "2026-08-26T14:55:03.040556635Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-29T14:27:40.37305214+02:00","current":"v2.13.1","ecosystem":"go","osvSnapshot":"sha256:5303069eeb654a55","outcome":"not-found","package":"github.com/golangci/golangci-lint/v2","prefix":"2","reason":"the feed carries no record for github.com/golangci/golangci-lint/v2 in Go, so nothing was measured","releasedAt":"2026-08-20T14:25:22Z","updatedAt":"2026-08-29T14:27:40.37305214+02:00","vulns":{"critical":0,"high":0,"low":0,"medium":0}}
