@@ -1,18 +1,1 @@
-{
- "package": "github.com/modelcontextprotocol/go-sdk",
- "ecosystem": "go",
- "prefix": "1",
- "current": "v1.7.0",
- "updatedAt": "2026-08-21T14:01:12.910901704Z",
- "releasedAt": "2026-07-27T15:20:53Z",
- "adoptedAt": "2026-08-21T14:01:12.910901704Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-21T14:01:12.910901704Z","current":"v1.7.0","ecosystem":"go","osvSnapshot":"sha256:e3b0c44298fc1c14","outcome":"clean","package":"github.com/modelcontextprotocol/go-sdk","prefix":"1","reason":"the feed carries 8 record(s) for github.com/modelcontextprotocol/go-sdk and none of their ranges cover v1.7.0","releasedAt":"2026-07-27T15:20:53Z","updatedAt":"2026-08-21T14:01:12.910901704Z","vulns":{"critical":0,"high":0,"low":0,"medium":0}}
