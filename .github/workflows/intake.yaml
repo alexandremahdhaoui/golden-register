@@ -45,6 +45,8 @@ jobs:
           #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
 
       - name: Run the register pipeline
+        env:
+          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
         run: |
           cd golden-register
           touch .envrc
