@@ -1,18 +1,1 @@
-{
- "package": "thiserror",
- "ecosystem": "rust",
- "prefix": "2",
- "current": "2.0.20",
- "updatedAt": "2026-08-21T14:01:12.910901704Z",
- "releasedAt": "0001-01-01T00:00:00Z",
- "adoptedAt": "2026-08-21T14:01:12.910901704Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-21T14:01:12.910901704Z","current":"2.0.20","ecosystem":"rust","osvSnapshot":"sha256:e3b0c44298fc1c14","outcome":"not-found","package":"thiserror","prefix":"2","reason":"the feed carries no record for thiserror in crates.io, so nothing was measured","updatedAt":"2026-08-21T14:01:12.910901704Z","vulns":{"critical":0,"high":0,"low":0,"medium":0}}
