@@ -1,18 +1,1 @@
-{
- "package": "pytest",
- "ecosystem": "python",
- "prefix": "9",
- "current": "9.1.1",
- "updatedAt": "2026-08-21T14:01:12.910901704Z",
- "releasedAt": "2026-06-19T10:58:31.347074Z",
- "adoptedAt": "2026-08-21T14:01:12.910901704Z",
- "vulns": {
-  "critical": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0
- },
- "outcome": "unreachable",
- "reason": "written while the pipeline pointed at a local stand-in that answered nothing, so this version was never checked. Re-run the register pipeline against api.osv.dev to replace this with a real measurement.",
- "osvSnapshot": "sha256:e3b0c44298fc1c14"
-}
+{"adoptedAt":"2026-08-21T14:01:12.910901704Z","current":"9.1.1","ecosystem":"python","osvSnapshot":"sha256:e3b0c44298fc1c14","outcome":"clean","package":"pytest","prefix":"9","reason":"the feed carries 2 record(s) for pytest and none of their ranges cover 9.1.1","releasedAt":"2026-06-19T10:58:31.347074Z","updatedAt":"2026-08-21T14:01:12.910901704Z","vulns":{"critical":0,"high":0,"low":0,"medium":0}}
