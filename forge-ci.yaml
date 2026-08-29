@@ -78,8 +78,8 @@ engines:
       secrets:
         - name: FACTORY_TOKEN
           fromEnv: FACTORY_TOKEN
-        - name: DISPATCH_TOKEN
-          fromEnv: DISPATCH_TOKEN
+        - name: FACTORY_TOKEN
+          fromEnv: FACTORY_TOKEN
       workflows:
         - name: intake
           kind: command
@@ -133,10 +133,10 @@ engines:
             # pipelines re-sync against it instead of waiting for a human.
             #
             # UNEXERCISED: written where Actions cannot run. It needs one secret,
-            # DISPATCH_TOKEN - a token that can send repository_dispatch to the
+            # FACTORY_TOKEN - a token that can send repository_dispatch to the
             # consumer repos named below.
           tagPattern: "v*"
-          secret: DISPATCH_TOKEN
+          secret: FACTORY_TOKEN
           eventType: register-tag
           consumers: [golden-factory, golden-register-consumer]
         - name: release
