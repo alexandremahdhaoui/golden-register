@@ -16,21 +16,19 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/alexandremahdhaoui/forge:v0.45.3
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - env:
-          GH_TOKEN: ${{ github.token }}
+
+      - name: Check out the workspace around this repo
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.FORGE_CI_GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          forge clone git@github.com:alexandremahdhaoui/golden-factory.git .
+
+      - name: Publish the release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
           SHA: ${{ inputs.sha }}
         run: |
-          git config user.name "forge-release"
-          git config user.email "forge-release@users.noreply.github.com"
-          if ! git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
-            git tag -a "$TAG" -m "release $TAG" "$SHA"
-            git push origin "$TAG"
-          fi
-          if ! gh release view "$TAG" >/dev/null 2>&1; then
-            gh release create "$TAG" --verify-tag --generate-notes
-          fi
+          forge-ci release --repo "$GITHUB_REPOSITORY" --dir golden-register --tag "$TAG" --sha "$SHA"
