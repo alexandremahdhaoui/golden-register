@@ -20,30 +20,14 @@ permissions:
 jobs:
   run:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/alexandremahdhaoui/forge:v0.45.3
     steps:
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.26"
 
       - name: Check out the workspace around this repo
         run: |
           git config --global url."https://x-access-token:${{ secrets.FORGE_CI_GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
-          go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@6aaa84a27c00f9be226998b2014d62d9129a8a96 bootstrap git@github.com:alexandremahdhaoui/golden-factory.git .
-
-      - name: Install the toolchain from the workspace
-        run: |
-          (cd forge && go install ./cmd/forge)
-          (cd forge-factory && go install ./cmd/...)
-          (cd forge-ci && go install ./cmd/...)
-          (cd forge-register && go install ./cmd/...)
-          echo "$HOME/go/bin" >> "$GITHUB_PATH"
-          # Once the toolchain's aggregated dist release exists (activate
-          # dist-release in forge-self-factory's pipeline), the install
-          # block above collapses to consuming prebuilt, digest-verified
-          # binaries - and works identically against an airgapped mirror:
-          #   export FORGE_DIST_MIRROR=https://github.com/alexandremahdhaoui/forge-self-factory/releases/latest/download
-          #   forge-factory sync --config ../forge-factory.yaml --root ..
-          #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
+          forge clone git@github.com:alexandremahdhaoui/golden-factory.git .
 
       - name: Run the targets
         run: |

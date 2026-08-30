@@ -41,40 +41,34 @@ engines:
     spec:
       repo: alexandremahdhaoui/golden-register
       dir: golden-register
-      setup:
-        - uses: actions/setup-go@v5
-          with:
-            go-version: "1.26"
-        # With the distribution consumption active (below), cache the store
-        # as a unit so a warm runner downloads nothing:
-        # - uses: actions/cache@v4
-        #   with:
-        #     path: ~/.cache/forge/store
-        #     key: forge-store-${{ runner.os }}
+      # Every job runs in the published toolchain, so nothing here builds
+      # forge from source. The version is the one the register carries on
+      # internal:ghcr.io/alexandremahdhaoui/forge, written by proof with the
+      # revision that produced it; read it with forge-register status and
+      # bump this line when it advances.
+      #
+      # Resolving it automatically is the next change and it needs three
+      # things that do not exist: an image entry in the toolchain block, a
+      # persisted resolved version (today it lives only in sync's in-process
+      # report), and a substitution pass over this file, which bootstrap
+      # copies byte for byte. A pin that works beats a resolution that does
+      # not exist yet.
+      container: ghcr.io/alexandremahdhaoui/forge:v0.45.3
+      # No setup actions. The image carries the toolchain, and a setup-go
+      # step would install a second one over it.
       workspace:
-        # The seed is exactly one pinned binary standing the whole workspace
-        # up in one call; latest is never a fallback. The sha is the
-        # forge-factory the toolchain last proved - bump it when the
-        # workspace pipeline republishes.
+        # One command stands the whole workspace up. forge is already on PATH
+        # inside the image, so the seed no longer needs a pinned go run of a
+        # forge-factory built from source.
         #
-        # This was five lines of shell that cloned the factory, ran its place
-        # script from the wrong directory, cloned this repo again and passed
-        # relative paths across two levels. Every scheduled run failed for a
-        # week inside those five lines.
-        bootstrapCommand: go run github.com/alexandremahdhaoui/forge-factory/cmd/forge-factory@6aaa84a27c00f9be226998b2014d62d9129a8a96 bootstrap git@github.com:alexandremahdhaoui/golden-factory.git .
-        toolchainScript: |
-          (cd forge && go install ./cmd/forge)
-          (cd forge-factory && go install ./cmd/...)
-          (cd forge-ci && go install ./cmd/...)
-          (cd forge-register && go install ./cmd/...)
-          echo "$HOME/go/bin" >> "$GITHUB_PATH"
-          # Once the toolchain's aggregated dist release exists (activate
-          # dist-release in forge-self-factory's pipeline), the install
-          # block above collapses to consuming prebuilt, digest-verified
-          # binaries - and works identically against an airgapped mirror:
-          #   export FORGE_DIST_MIRROR=https://github.com/alexandremahdhaoui/forge-self-factory/releases/latest/download
-          #   forge-factory sync --config ../forge-factory.yaml --root ..
-          #   echo "$(cd .. && pwd)/.forge/bin" >> "$GITHUB_PATH"
+        # A container carries tools and not members, so this step stays: it
+        # is the only thing that puts the repos on disk.
+        #
+        # The toolchainScript that was here did (cd forge && go install
+        # ./cmd/forge), and forge is not a member of golden-factory - it is a
+        # verbatim go dependency. So that line could never work from this
+        # workspace, and every scheduled run died in it.
+        bootstrapCommand: forge clone git@github.com:alexandremahdhaoui/golden-factory.git .
       secrets:
         - name: FORGE_CI_GITHUB_TOKEN
           fromEnv: FORGE_CI_GITHUB_TOKEN

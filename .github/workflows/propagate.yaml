@@ -3,7 +3,7 @@
 #
 # UNEXERCISED: written where Actions cannot run. It needs one secret,
 # FORGE_CI_DISPATCH_TOKEN - a token that can send repository_dispatch to the
-# consumer repos named below.
+# consumer repos named below and nothing else.
 name: propagate
 
 on:
