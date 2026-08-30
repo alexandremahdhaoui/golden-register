@@ -86,6 +86,9 @@ engines:
             # to this repo - because the pipeline builds the whole playground
             # workspace around this checkout.
           cron: "17 5 * * *"
+          # A dispatched or scheduled run has no audience here: whoever caused
+          # it is watching another repo's checks, or nobody typed it at all.
+          reportFailure: true
           job: apply
           stepName: Run the register pipeline
           secret: FORGE_CI_GITHUB_TOKEN
@@ -108,6 +111,9 @@ engines:
             #   forge-register add go:github.com/x/pkg --reason "..." \
             #     --dispatch <owner>/golden-register
           events: [admission-request]
+          # A dispatched or scheduled run has no audience here: whoever caused
+          # it is watching another repo's checks, or nobody typed it at all.
+          reportFailure: true
           job: file
           stepName: File the request
           secret: FORGE_CI_GITHUB_TOKEN
@@ -135,6 +141,9 @@ engines:
           consumers: [golden-factory, golden-register-consumer]
         - name: release
           kind: release
+          # It stands the workspace up to reach the toolchain, and that clone
+          # reaches private members.
+          secret: FORGE_CI_GITHUB_TOKEN
       runner:
         name: ci-runner
         secret: FORGE_CI_GITHUB_TOKEN
@@ -173,7 +182,7 @@ engines:
   #   engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
   #   manager: local
   #   spec:
-  #     releaseIn: golden-register
+  #     repo: alexandremahdhaoui/golden-register
 
 state: pipeline-state
 triggers: [on-change]
