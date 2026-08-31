@@ -8,3 +8,6 @@
 # here; ignoring it makes such a run fail loud instead of committing state
 # records into the register.
 /golden-state/
+
+# forge-factory materialises these. A version is written in forge-factory.yaml.
+/.envrc
