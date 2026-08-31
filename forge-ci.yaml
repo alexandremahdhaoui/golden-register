@@ -85,7 +85,11 @@ engines:
             # FORGE_CI_GITHUB_TOKEN - a token that can read every workspace member and push
             # to this repo - because the pipeline builds the whole playground
             # workspace around this checkout.
-          cron: "17 5 * * *"
+          # Weekly, Monday morning: the register advances by policy, not by
+          # calendar - an advisory on a resolved version fails a consumer
+          # sync the moment it lands, whatever this cadence says, so the
+          # cron only paces adoption of new versions.
+          cron: "0 6 * * 1"
           # A dispatched or scheduled run has no audience here: whoever caused
           # it is watching another repo's checks, or nobody typed it at all.
           reportFailure: true
@@ -172,17 +176,19 @@ engines:
     engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-promotion-all"
     manager: local
 
-  # Tag-on-green. Uncomment this engine, the `release: publish` line on the
-  # canary stage and the top-level `version:` to make a green run tag and
-  # publish on its own. It shells out to gh, which this environment lacks -
-  # activate it on a machine that has gh authenticated, and bump version:
-  # past the last published tag first (a tag is never moved).
-  # - alias: publish
-  #   type: artifact
-  #   engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
-  #   manager: local
-  #   spec:
-  #     repo: alexandremahdhaoui/golden-register
+  # Tag-on-green: a canary-green run tags and publishes on its own, which is
+  # what makes a mint reach consumers - the propagate fan-out below fires on
+  # the tag, and without this engine that loop was dead. The version is
+  # derived from the last tag (never typed), the engine speaks the GitHub
+  # API over HTTP with the named token - there is no gh dependency - and a
+  # re-run of an already-published revision converges instead of failing.
+  - alias: publish
+    type: artifact
+    engine: "forge://github.com/alexandremahdhaoui/forge-ci/cmd/ci-artifact-release"
+    manager: local
+    spec:
+      repo: alexandremahdhaoui/golden-register
+      tokenEnv: FORGE_CI_GITHUB_TOKEN
 
 state: pipeline-state
 triggers: [on-change]
@@ -221,10 +227,10 @@ stages:
 
   - name: canary
     # The revision is minted here: only a canary-green index state is a
-    # claim consumers may rely on. Tagging on green is the publish engine's
-    # job - see the commented engine above for how to activate it.
+    # claim consumers may rely on. The publish engine tags on green with a
+    # derived version, and the tag is what fires the propagate fan-out.
     mint: true
-    # release: publish     # with `version: vX.Y.Z` at the top level
+    release: publish
     promotion: all-pass
     substages:
       - name: default
