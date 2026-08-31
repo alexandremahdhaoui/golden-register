@@ -45,15 +45,15 @@ engines:
       # forge from source. The version is the one the register carries on
       # internal:ghcr.io/alexandremahdhaoui/forge, written by proof with the
       # revision that produced it; read it with forge-register status and
-      # bump this line when it advances.
+      # never typed here.
       #
-      # Resolving it automatically is the next change and it needs three
-      # things that do not exist: an image entry in the toolchain block, a
-      # persisted resolved version (today it lives only in sync's in-process
-      # report), and a substitution pass over this file, which bootstrap
-      # copies byte for byte. A pin that works beats a resolution that does
-      # not exist yet.
-      container: ghcr.io/alexandremahdhaoui/forge:v0.45.10
+      # The three pieces that used to be missing exist now: the factory
+      # declares toolchain.image, sync resolves the track and persists the
+      # full reference into the generated .forge/toolchain-image at the
+      # workspace root, and containerFile reads it there at declare time.
+      # This pipeline runs with --root .., so the file resolves at the
+      # workspace root the sync wrote it into.
+      containerFile: .forge/toolchain-image
       # No setup actions. The image carries the toolchain, and a setup-go
       # step would install a second one over it.
       workspace:
