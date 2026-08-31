@@ -20,7 +20,7 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/alexandremahdhaoui/forge:v0.45.23
+      image: ghcr.io/alexandremahdhaoui/forge:v0.45.24
     steps:
 
       - name: Check out the workspace around this repo
