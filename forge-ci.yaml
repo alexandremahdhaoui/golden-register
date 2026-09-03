@@ -226,14 +226,25 @@ stages:
         targets: [evaluate]
 
   - name: canary
-    # The revision is minted here: only a canary-green index state is a
-    # claim consumers may rely on. The publish engine tags on green with a
-    # derived version, and the tag is what fires the propagate fan-out.
-    mint: true
-    release: publish
     promotion: all-pass
     substages:
       - name: default
         engine: here
         manager: local
         targets: [canary]
+
+  # The release is a substage naming the artifact engine, in a stage of its
+  # own after the canary: substages of one stage run at the same time, so a
+  # publish beside the canary would tag while the canary was still deciding.
+  # Only a canary-green index state is a claim consumers may rely on, and
+  # stage order is what says so.
+  #
+  # The revision is minted before the first stage, by the evaluate phase. It
+  # is the run's identity and not its verdict; what says this index state was
+  # proven is the canary's run record and this release.
+  - name: release
+    promotion: all-pass
+    substages:
+      - name: publish
+        engine: publish
+        manager: local
