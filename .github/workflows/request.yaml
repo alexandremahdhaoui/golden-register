@@ -19,12 +19,25 @@ permissions:
   contents: write
   issues: write
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   file:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/alexandremahdhaoui/forge:v0.45.24
+      image: ghcr.io/alexandremahdhaoui/forge:v0.45.48
     steps:
+
+      - name: Restore the tool store
+        id: tool-store
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/forge
+          key: tool-store-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            tool-store-${{ runner.os }}-
 
       - name: Check out the workspace around this repo
         run: |
@@ -48,6 +61,19 @@ jobs:
             ${REQUESTER:+--requester "$REQUESTER"} \
             --reason "$REASON" \
             "$ECOSYSTEM:$PACKAGE"
+
+      - name: Name the tool store by its content
+        id: tool-store-key
+        if: always()
+        run: |
+          echo "key=$(find ~/.cache/forge -mindepth 1 -maxdepth 3 2>/dev/null | sort | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+      - name: Save the tool store
+        if: always() && steps.tool-store.outputs.cache-matched-key != format('tool-store-{0}-{1}', runner.os, steps.tool-store-key.outputs.key)
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/forge
+          key: tool-store-${{ runner.os }}-${{ steps.tool-store-key.outputs.key }}
 
       - name: Say that the run failed
         if: failure()
