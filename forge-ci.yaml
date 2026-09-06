@@ -50,10 +50,11 @@ engines:
       # The three pieces that used to be missing exist now: the factory
       # declares toolchain.image, sync resolves the track and persists the
       # full reference into the generated .forge/toolchain-image at the
-      # workspace root, and containerFile reads it there at declare time.
+      # workspace root, and container.file reads it there at declare time.
       # This pipeline runs with --root .., so the file resolves at the
       # workspace root the sync wrote it into.
-      containerFile: .forge/toolchain-image
+      container:
+        file: .forge/toolchain-image
       # No setup actions. The image carries the toolchain, and a setup-go
       # step would install a second one over it.
       workspace:
@@ -89,7 +90,9 @@ engines:
           # calendar - an advisory on a resolved version fails a consumer
           # sync the moment it lands, whatever this cadence says, so the
           # cron only paces adoption of new versions.
-          cron: "0 6 * * 1"
+          # Quoted: a bare on is the boolean true to the YAML parser.
+          "on":
+            cron: "0 6 * * 1"
           # A dispatched or scheduled run has no audience here: whoever caused
           # it is watching another repo's checks, or nobody typed it at all.
           reportFailure: true
@@ -114,7 +117,8 @@ engines:
             #
             #   forge-register add go:github.com/x/pkg --reason "..." \
             #     --dispatch <owner>/golden-register
-          events: [admission-request]
+          "on":
+            events: [admission-request]
           # A dispatched or scheduled run has no audience here: whoever caused
           # it is watching another repo's checks, or nobody typed it at all.
           reportFailure: true
@@ -195,17 +199,20 @@ triggers: [on-change]
 
 targets:
   - alias: process
-    forge: test run process
+    binary: forge
+    args: [test, run, process]
     in: [golden-register]
 
   - alias: evaluate
-    forge: test run evaluate
+    binary: forge
+    args: [test, run, evaluate]
     in: [golden-register]
 
   # The canary syncs the playground workspace against the candidate index
   # and runs a consumer gate. Red means nothing mints and nothing publishes.
   - alias: canary
-    forge: test run canary
+    binary: forge
+    args: [test, run, canary]
     in: [golden-register]
 
 stages:
