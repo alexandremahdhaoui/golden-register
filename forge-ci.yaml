@@ -1,6 +1,5 @@
 name: golden-register
 
-artifactStorePath: .forge-ci/artifact-store.yaml
 
 repos:
   - name: golden-register
